@@ -151,7 +151,7 @@ function OldEnglish({
 
     return (
       <div>
-        <Form
+        {/* <Form
           form={pourForm}
           layout={"inline"}
           name="pourOE"
@@ -187,7 +187,7 @@ function OldEnglish({
               Pour
             </Button>
           </Form.Item>
-        </Form>
+        </Form> */}
       </div>
     );
   };
@@ -308,14 +308,14 @@ function OldEnglish({
                             >
                               Sip
                             </Button>
-                            <Popover
+                            {/* <Popover
                               content={() => {
                                 return pour(id);
                               }}
                               title="Pour OE"
                             >
                               <Button type="primary">Pour</Button>
-                            </Popover>
+                            </Popover> */}
                           </>
                         ) : (
                           <Button
@@ -337,7 +337,7 @@ function OldEnglish({
                           type="primary"
                           onClick={async () => {
                             try {
-                              const txCur = await tx(writeContracts[oldEnglishContract].wrap(id));
+                              const txCur = await tx(writeContracts[oldEnglishContract].refill(id));
                               await txCur.wait();
                               updateOneOldEnglish(id);
                             } catch (e) {
@@ -345,7 +345,21 @@ function OldEnglish({
                             }
                           }}
                         >
-                          Wrap
+                          Refill
+                        </Button>
+                        <Button
+                          type="primary"
+                          onClick={async () => {
+                            try {
+                              const txCur = await tx(writeContracts[oldEnglishContract].addPowder(id));
+                              await txCur.wait();
+                              updateOneOldEnglish(id);
+                            } catch (e) {
+                              console.log("wrap failed", e);
+                            }
+                          }}
+                        >
+                          Powder
                         </Button>
                         <Popover
                           content={() => {
