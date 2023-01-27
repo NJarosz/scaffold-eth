@@ -22,13 +22,28 @@
    },
    "explorerExclude.backup": null,
    "eslint.workingDirectories": [
-   
-      { "directory": "packages/eth-hooks", "changeProcessCWD": true },
-      { "directory": "packages/hardhat-ts", "changeProcessCWD": true },
-      { "directory": "packages/vite-app-ts", "changeProcessCWD": true },
+      {
+         "directory": "packages/eth-hooks",
+         "changeProcessCWD": true
+      },
+      {
+         "directory": "packages/hardhat-ts",
+         "changeProcessCWD": true
+      },
+      {
+         "directory": "packages/vite-app-ts",
+         "changeProcessCWD": true
+      },
    ],
    "search.exclude": {
+      "**/node_modules": false,
       "**/yarn-error.log": true,
       "**/yarn.lock": true
+   },
+   "files.watcherExclude": {
+      "**/node_modules/*/**": false
+   },
+   "explorer.autoRevealExclude": {
+      "**/node_modules": false
    }
 }

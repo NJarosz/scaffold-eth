@@ -16,10 +16,10 @@ function OldEnglish({
   tx,
   address,
   localProvider,
-  oldEnglishContract,
+  falgeneContract,
   startBlock,
 }) {
-  const rawDrinks = useEventListener(readContracts, oldEnglishContract, "Drink", localProvider, startBlock - 9000);
+  const rawDrinks = useEventListener(readContracts, falgeneContract, "Drink", localProvider, startBlock - 9000);
   const drinks = useDebounce(rawDrinks, 1000);
 
   return (
@@ -67,4 +67,4 @@ function OldEnglish({
   );
 }
 
-export default OldEnglish;
+export default Falgene;

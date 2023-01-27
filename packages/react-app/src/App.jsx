@@ -71,7 +71,7 @@ const providers = [
 ];
 
 function App(props) {
-  const oldEnglishContract = "EightPack";
+  const FalgeneContract = "Bottle";
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
 
@@ -150,15 +150,20 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  const priceToMint = useContractReader(readContracts, oldEnglishContract, "price");
+  const priceToMint = useContractReader(readContracts, FalgeneContract, "price");
+  if (DEBUG) console.log(priceToMint);
 
-  const totalSupply = useContractReader(readContracts, oldEnglishContract, "totalSupply");
-  const limit = useContractReader(readContracts, oldEnglishContract, "limit");
+  const totalSupply = useContractReader(readContracts, FalgeneContract, "totalSupply");
+  if (DEBUG) console.log(totalSupply);
+
+  const limit = useContractReader(readContracts, FalgeneContract, "limit");
+  if (DEBUG) console.log(limit);
+
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, oldEnglishContract, "balanceOf", [address]);
+  const balance = useContractReader(readContracts, FalgeneContract, "balanceOf", [address]);
 
-  const buzzBalance = useContractReader(readContracts, "Buzz", "balanceOf", [address]);
+  const hydrateBalance = useContractReader(readContracts, "Hydrate", "balanceOf", [address]);
   //
   // 🧠 This effect will update OldEnglishs by polling when your balance changes
   //
@@ -229,19 +234,19 @@ function App(props) {
           <p>Take a sip. Wrap it up. Pour one out. </p>
         </div>
 
-        {totalSupply>=limit?<div>
-          <h2> All 40s have been minted! </h2>
+        {totalSupply >= limit ? <div>
+          <h2> All Bottles have been minted! </h2>
 
-        <h3> Fork <a href="https://github.com/scaffold-eth/scaffold-eth/tree/sipping-oe" target="_blank">the repo</a>, follow the readme, and deploy your own to optimism! </h3>
-        </div>:<Button
+          <h3> Fork <a href="https://github.com/scaffold-eth/scaffold-eth/tree/sipping-oe" target="_blank">the repo</a>, follow the readme, and deploy your own to optimism! </h3>
+        </div> : <Button
           type="primary"
           size="large"
           loading={minting}
           onClick={async () => {
             setMinting(true);
-            const priceRightNow = await readContracts[oldEnglishContract].price();
+            const priceRightNow = await readContracts[FalgeneContract].price();
             try {
-              const txCur = await tx(writeContracts[oldEnglishContract].mintItem({ value: priceRightNow }));
+              const txCur = await tx(writeContracts[FalgeneContract].mintItem({ value: priceRightNow }));
               await txCur.wait();
               setMinting(false);
               notification.open({
@@ -267,9 +272,8 @@ function App(props) {
           </p>
         </div>
 
-        <h2 style={{ marginTop: 12 }}>{`Your $BUZZ: ${
-          buzzBalance ? ethers.utils.formatEther(buzzBalance) : "..."
-        }`}</h2>
+        <h2 style={{ marginTop: 12 }}>{`Your $HYDR: ${hydrateBalance ? ethers.utils.formatEther(hydrateBalance) : "..."
+          }`}</h2>
       </div>
 
       <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
@@ -297,7 +301,7 @@ function App(props) {
               tx={tx}
               address={address}
               DEBUG={DEBUG}
-              oldEnglishContract={oldEnglishContract}
+              FalgeneContract={FalgeneContract}
               balance={balance}
               startBlock={startBlock}
             />
@@ -315,7 +319,7 @@ function App(props) {
               tx={tx}
               address={address}
               DEBUG={DEBUG}
-              oldEnglishContract={oldEnglishContract}
+              FalgeneContract={FalgeneContract}
               startBlock={startBlock}
             />
           </div>
@@ -328,7 +332,7 @@ function App(props) {
             */}
 
           <Contract
-            name="Buzz"
+            name="Hydrate"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -338,7 +342,7 @@ function App(props) {
           />
 
           <Contract
-            name={oldEnglishContract}
+            name={FalgeneContract}
             price={price}
             signer={userSigner}
             provider={localProvider}

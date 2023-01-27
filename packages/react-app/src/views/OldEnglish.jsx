@@ -17,7 +17,7 @@ function OldEnglish({
   tx,
   address,
   localProvider,
-  oldEnglishContract,
+  falgeneContract,
   balance,
   startBlock,
 }) {
@@ -28,7 +28,7 @@ function OldEnglish({
 
   const fetchMetadataAndUpdate = async id => {
     try {
-      const tokenURI = await readContracts[oldEnglishContract].tokenURI(id);
+      const tokenURI = await readContracts[falgeneContract].tokenURI(id);
       const jsonManifestString = atob(tokenURI.substring(29));
 
       try {
@@ -46,7 +46,7 @@ function OldEnglish({
   };
 
   const updateAllOldEnglish = async fetchAll => {
-    if (readContracts[oldEnglishContract] && totalSupply /*&& totalSupply <= receives.length*/) {
+    if (readContracts[falgeneContract] && totalSupply /*&& totalSupply <= receives.length*/) {
       setLoadingOldEnglish(true);
       let numberSupply = totalSupply.toNumber();
 
@@ -70,7 +70,7 @@ function OldEnglish({
   const updateYourOldEnglish = async () => {
     for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
       try {
-        const tokenId = await readContracts[oldEnglishContract].tokenOfOwnerByIndex(address, tokenIndex);
+        const tokenId = await readContracts[falgeneContract].tokenOfOwnerByIndex(address, tokenIndex);
         fetchMetadataAndUpdate(tokenId);
       } catch (e) {
         console.log(e);
@@ -79,14 +79,14 @@ function OldEnglish({
   };
 
   const updateOneOldEnglish = async id => {
-    if (readContracts[oldEnglishContract] && totalSupply) {
+    if (readContracts[falgeneContract] && totalSupply) {
       fetchMetadataAndUpdate(id);
     }
   };
 
   useEffect(() => {
     if (totalSupply && totalSupply.toNumber() > 0) updateAllOldEnglish(false);
-  }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), page]);
+  }, [readContracts[falgeneContract], (totalSupply || "0").toString(), page]);
 
   const onFinishFailed = errorInfo => {
     console.log("Failed:", errorInfo);
@@ -107,7 +107,7 @@ function OldEnglish({
             setSending(true);
             try {
               const txCur = await tx(
-                writeContracts[oldEnglishContract]["safeTransferFrom(address,address,uint256)"](
+                writeContracts[falgeneContract]["safeTransferFrom(address,address,uint256)"](
                   address,
                   values["to"],
                   id,
@@ -159,7 +159,7 @@ function OldEnglish({
           onFinish={async values => {
             setPouring(true);
             try {
-              const txCur = await tx(writeContracts[oldEnglishContract]["pour"](id, values["to"]));
+              const txCur = await tx(writeContracts[falgeneContract]["pour"](id, values["to"]));
               await txCur.wait();
               updateOneOldEnglish(id);
               setPouring(false);
@@ -270,15 +270,14 @@ function OldEnglish({
                     }
                   >
                     <a
-                      href={`${blockExplorer}token/${
-                        readContracts[oldEnglishContract] && readContracts[oldEnglishContract].address
-                      }?a=${id}`}
+                      href={`${blockExplorer}token/${readContracts[falgeneContract] && readContracts[falgeneContract].address
+                        }?a=${id}`}
                       target="_blank"
                     >
-                      <img src={item.image && item.image} alt={"OldEnglish #" + id} width="100" />
+                      <img src={item.image && item.image} alt={"Bottle #" + id} width="100" />
                     </a>
                     {item.owner &&
-                    item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
+                      item.owner.toLowerCase() == readContracts[falgeneContract].address.toLowerCase() ? (
                       <div>{item.description}</div>
                     ) : (
                       <div>
@@ -298,7 +297,7 @@ function OldEnglish({
                               type="primary"
                               onClick={async () => {
                                 try {
-                                  const txCur = await tx(writeContracts[oldEnglishContract].sip(id));
+                                  const txCur = await tx(writeContracts[falgeneContract].sip(id));
                                   await txCur.wait();
                                   updateOneOldEnglish(id);
                                 } catch (e) {
@@ -322,7 +321,7 @@ function OldEnglish({
                             type="primary"
                             onClick={async () => {
                               try {
-                                const txCur = await tx(writeContracts[oldEnglishContract].recycle(id));
+                                const txCur = await tx(writeContracts[falgeneContract].recycle(id));
                                 await txCur.wait();
                                 updateOneOldEnglish(id);
                               } catch (e) {
@@ -337,7 +336,7 @@ function OldEnglish({
                           type="primary"
                           onClick={async () => {
                             try {
-                              const txCur = await tx(writeContracts[oldEnglishContract].refill(id));
+                              const txCur = await tx(writeContracts[falgeneContract].refill(id));
                               await txCur.wait();
                               updateOneOldEnglish(id);
                             } catch (e) {
@@ -351,7 +350,7 @@ function OldEnglish({
                           type="primary"
                           onClick={async () => {
                             try {
-                              const txCur = await tx(writeContracts[oldEnglishContract].addPowder(id));
+                              const txCur = await tx(writeContracts[falgeneContract].addPowder(id));
                               await txCur.wait();
                               updateOneOldEnglish(id);
                             } catch (e) {
