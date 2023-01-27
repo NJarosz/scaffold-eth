@@ -4,8 +4,8 @@
       "name": "localhost",
       "chainId": "31337",
       "contracts": {
-        "Buzz": {
-          "address": "0x917624F66D2399A5E017BA984A11843975102026",
+        "Hydrate": {
+          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
           "abi": [
             {
               "inputs": [],
@@ -248,7 +248,7 @@
                   "type": "address"
                 }
               ],
-              "name": "isDrunk",
+              "name": "isHydrated",
               "outputs": [
                 {
                   "internalType": "bool",
@@ -431,8 +431,8 @@
             }
           ]
         },
-        "EightPack": {
-          "address": "0xaECeB9BbbcA5feD618EA7D996944F280D2944e1E",
+        "Bottle": {
+          "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
           "abi": [
             {
               "anonymous": false,
@@ -962,11 +962,11 @@
               "inputs": [
                 {
                   "internalType": "address",
-                  "name": "_buzz",
+                  "name": "_hydrate",
                   "type": "address"
                 }
               ],
-              "name": "setBuzz",
+              "name": "setHydrate",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -1005,7 +1005,7 @@
             },
             {
               "inputs": [],
-              "name": "sipsPerForty",
+              "name": "sipsPerBottle",
               "outputs": [
                 {
                   "internalType": "uint256",

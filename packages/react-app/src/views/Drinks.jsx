@@ -67,4 +67,4 @@ function OldEnglish({
   );
 }
 
-export default Falgene;
+export default OldEnglish;

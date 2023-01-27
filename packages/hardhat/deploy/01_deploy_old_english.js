@@ -6,7 +6,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  await deploy("EightPack", {
+  await deploy("Bottle", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
@@ -14,15 +14,15 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
 
   // Getting a previously deployed contract
-  const OldEnglish = await ethers.getContract("EightPack", deployer);
+  const Falgene = await ethers.getContract("Bottle", deployer);
 
-  const Buzz = await ethers.getContract("Buzz", deployer);
+  const Hydrate = await ethers.getContract("Hydrate", deployer);
 
-  await Buzz.setMinter(OldEnglish.address);
-  console.log(`Old English (${OldEnglish.address}) set as a Buzz minter`);
+  await Hydrate.setMinter(Falgene.address);
+  console.log(`Falgene (${Falgene.address}) set as a Hydrate minter`);
 
-  await OldEnglish.setBuzz(Buzz.address);
+  await Falgene.setHydrate(Hydrate.address);
 
-  console.log(`Buzz set to ${Buzz.address} in OldEnglish`);
+  console.log(`Hydrate set to ${Hydrate.address} in Falgene`);
 };
-module.exports.tags = ["OldEnglish"];
+module.exports.tags = ["Falgene"];
