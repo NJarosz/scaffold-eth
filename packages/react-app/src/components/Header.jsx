@@ -6,7 +6,7 @@ import React from "react";
 export default function Header() {
   return (
     <a href="https://oe40.me" target="_blank" rel="noopener noreferrer">
-      <PageHeader title="🍻 oe40.me" subTitle="Sipping on cool, crisp OΞ 40s!" style={{ cursor: "pointer" }} />
+      <PageHeader title="🚰 Bottles" subTitle="Staying Hydrated!" style={{ cursor: "pointer" }} />
     </a>
   );
 }

@@ -46,6 +46,7 @@ build
 # Hardhat files
 cache
 artifacts
+mnemonic.txt
 
 # misc
 .DS_Store

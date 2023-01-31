@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Hydrate is ERC20Burnable, Ownable {
     uint256 hit = 420_000_000_000_000_000_000;
+    uint256 plusHit = 480_000_000_000_000_000_000;
     uint256 hydrated = 6969_000_000_000_000_000_000;
 
     mapping(address => bool) public minters;
@@ -20,6 +21,11 @@ contract Hydrate is ERC20Burnable, Ownable {
     function mint(address _recipient) public {
         require(minters[msg.sender], "only minters can mint");
         _mint(_recipient, hit);
+    }
+
+    function mintPlus(address _recipient) public {
+        require(minters[msg.sender], "only minters can mint");
+        _mint(_recipient, plusHit);
     }
 
     function isHydrated(address sipper) public view returns (bool) {

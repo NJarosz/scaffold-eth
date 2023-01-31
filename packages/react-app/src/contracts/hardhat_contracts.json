@@ -5,7 +5,7 @@
       "chainId": "31337",
       "contracts": {
         "Hydrate": {
-          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          "address": "0x0E801D84Fa97b50751Dbf25036d067dCf18858bF",
           "abi": [
             {
               "inputs": [],
@@ -276,6 +276,19 @@
               "inputs": [
                 {
                   "internalType": "address",
+                  "name": "_recipient",
+                  "type": "address"
+                }
+              ],
+              "name": "mintPlus",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
                   "name": "",
                   "type": "address"
                 }
@@ -432,7 +445,7 @@
           ]
         },
         "Bottle": {
-          "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+          "address": "0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf",
           "abi": [
             {
               "anonymous": false,
@@ -544,7 +557,7 @@
                   "type": "address"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "bool",
                   "name": "powder",
                   "type": "bool"
@@ -585,6 +598,12 @@
                   "indexed": true,
                   "internalType": "uint256",
                   "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "amount",
                   "type": "uint256"
                 },
                 {
@@ -632,7 +651,7 @@
               ],
               "name": "addPowder",
               "outputs": [],
-              "stateMutability": "nonpayable",
+              "stateMutability": "payable",
               "type": "function"
             },
             {
@@ -822,6 +841,24 @@
               "inputs": [
                 {
                   "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "drinker",
+                  "type": "address"
+                }
+              ],
+              "name": "pour",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
                   "name": "",
                   "type": "uint256"
                 }
@@ -832,6 +869,19 @@
                   "internalType": "bool",
                   "name": "",
                   "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "powderPrice",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -860,7 +910,20 @@
               ],
               "name": "refill",
               "outputs": [],
-              "stateMutability": "nonpayable",
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "refillPrice",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {

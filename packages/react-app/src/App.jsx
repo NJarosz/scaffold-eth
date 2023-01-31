@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
-import { OldEnglish, Drinks } from "./views";
+import { Falgene, Drinks } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -56,7 +56,7 @@ const { ethers } = require("ethers");
 
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 
 const targetNetworkString = "localhost" // <------ change this as you deploy do other networks
@@ -151,13 +151,21 @@ function App(props) {
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
   const priceToMint = useContractReader(readContracts, FalgeneContract, "price");
-  if (DEBUG) console.log(priceToMint);
+  if (DEBUG) console.log("Price To Mint", priceToMint);
 
-  const totalSupply = useContractReader(readContracts, FalgeneContract, "totalSupply");
-  if (DEBUG) console.log(totalSupply);
+  const priceToRefill = useContractReader(readContracts, FalgeneContract, "refillPrice");
+  if (DEBUG) console.log("Price To Refill", priceToRefill);
 
-  const limit = useContractReader(readContracts, FalgeneContract, "limit");
-  if (DEBUG) console.log(limit);
+  const pricePowder = useContractReader(readContracts, FalgeneContract, "powderPrice");
+  if (DEBUG) console.log("Price To Refill", pricePowder);
+
+  let totalSupply = useContractReader(readContracts, FalgeneContract, "totalSupply");
+  if (totalSupply) totalSupply = totalSupply.toNumber();
+  if (DEBUG && totalSupply) console.log("TOTAL SUPPLY", totalSupply);
+
+  let limit = useContractReader(readContracts, FalgeneContract, "limit");
+  if (limit) limit = limit.toNumber();
+  if (DEBUG) console.log("LIMIT", limit);
 
 
   // keep track of a variable from the contract in the local React state:
@@ -165,7 +173,7 @@ function App(props) {
 
   const hydrateBalance = useContractReader(readContracts, "Hydrate", "balanceOf", [address]);
   //
-  // 🧠 This effect will update OldEnglishs by polling when your balance changes
+  // 🧠 This effect will update Falgene by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
 
@@ -230,8 +238,8 @@ function App(props) {
 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 12, paddingBottom: 32 }}>
         <div style={{ fontSize: 16, marginTop: 32 }}>
-          {/*}<h2>{`Get yourself an oe40 `}</h2>*/}
-          <p>Take a sip. Wrap it up. Pour one out. </p>
+          <h2>{`Get yourself a Water Bottle `}</h2>
+          <p>Take a sip. Add Powder for extra Hydration. </p>
         </div>
 
         {totalSupply >= limit ? <div>
@@ -250,22 +258,23 @@ function App(props) {
               await txCur.wait();
               setMinting(false);
               notification.open({
-                message: "🍻 Minted an OE 🍻",
-                description: "Sip, wrap, pour and recycle!",
+                message: "💧 Minted an Bottle 💧",
+                description: "Sip, Add Powder, and Refill!",
               });
             } catch (e) {
               console.log("mint failed", e);
               setMinting(false);
             }
           }}
-          disabled={limit && totalSupply && limit.lt(totalSupply)}
+          disabled={limit && totalSupply && limit < totalSupply}
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>}
 
 
         <div style={{ fontSize: 16, marginTop: 32 }}>
-          <p>Recycle an empty to get your Ξ0.001 back!!</p>
+          <p>Refill an empty for Ξ{priceToRefill && (+ethers.utils.formatEther(priceToRefill)).toFixed(4)}!!</p>
+          <p>Add Powder for Ξ{pricePowder && (+ethers.utils.formatEther(pricePowder)).toFixed(4)}!!</p>
           <p>
             {" "}
             {"" + totalSupply} / {"" + limit} minted
@@ -291,11 +300,13 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           <div style={{ fontSize: 16, marginTop: 32 }}>
-            <OldEnglish
+            <Falgene
               readContracts={readContracts}
               mainnetProvider={mainnetProvider}
               blockExplorer={blockExplorer}
               totalSupply={totalSupply}
+              priceToRefill={priceToRefill}
+              pricePowder={pricePowder}
               writeContracts={writeContracts}
               localProvider={localProvider}
               tx={tx}
@@ -326,10 +337,10 @@ function App(props) {
         </Route>
         <Route exact path="/debug">
           {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
+                  🎛 this scaffolding is full of commonly used components
+                  this <Contract/> component will automatically parse your ABI
+                  and give you a form to interact with it locally
+              */}
 
           <Contract
             name="Hydrate"
@@ -359,12 +370,12 @@ function App(props) {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
           {/*<div style={{ marginRight: 20 }}>
-            <NetworkSwitch
-              networkOptions={networkOptions}
-              selectedNetwork={selectedNetwork}
-              setSelectedNetwork={setSelectedNetwork}
-            />
-          </div>*/}
+              <NetworkSwitch
+                networkOptions={networkOptions}
+                selectedNetwork={selectedNetwork}
+                setSelectedNetwork={setSelectedNetwork}
+              />
+            </div>*/}
           <Account
             address={address}
             localProvider={localProvider}
@@ -421,6 +432,8 @@ function App(props) {
       </div>
     </div>
   );
+
+
 }
 
 export default App;

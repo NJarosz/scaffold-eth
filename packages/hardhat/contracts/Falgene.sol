@@ -21,8 +21,10 @@ contract Falgene is ERC721Enumerable, Ownable {
     uint256 public immutable limit;
     uint256 public immutable curve;
     uint256 public price;
-
+    uint256 public refillPrice;
+    uint256 public powderPrice;
     uint256 public sipsPerBottle = 4;
+
     mapping(uint256 => bytes3) public color;
     mapping(uint256 => uint256) public sips;
     mapping(uint256 => bool) public powder;
@@ -32,9 +34,16 @@ contract Falgene is ERC721Enumerable, Ownable {
         address indexed sender,
         address indexed drinker
     );
-    event Refill(uint256 indexed id, address indexed sender);
-    event Powder(uint256 indexed id, address indexed sender, bool powder);
-    // event Recycle(uint256 indexed id, address indexed sender, uint256 indexed amount);
+    event Refill(
+        uint256 indexed id,
+        uint256 indexed amount,
+        address indexed sender
+    );
+    event Powder(
+        uint256 indexed id,
+        address indexed sender,
+        bool indexed powder
+    );
     event Receive(
         address indexed sender,
         uint256 indexed amount,
@@ -62,6 +71,8 @@ contract Falgene is ERC721Enumerable, Ownable {
         require(msg.value >= price, "NOT ENOUGH");
 
         price = (price * curve) / 1000;
+        refillPrice = price / 5;
+        powderPrice = price / 10;
 
         _tokenIds.increment();
 
@@ -90,22 +101,39 @@ contract Falgene is ERC721Enumerable, Ownable {
         require(ownerOf(id) == msg.sender, "only owner can sip!");
         require(sips[id] < sipsPerBottle, "this drink is done!");
         sips[id] += 1;
-        Hydrate(hydrate).mint(msg.sender);
+        if (powder[id]) {
+            Hydrate(hydrate).mintPlus(msg.sender);
+        } else {
+            Hydrate(hydrate).mint(msg.sender);
+        }
         emit Drink(id, msg.sender, msg.sender);
     }
 
-    function addPowder(uint256 id) public {
+    function addPowder(uint256 id) public payable {
         require(ownerOf(id) == msg.sender, "only owner can add powder!");
         require(sips[id] < sipsPerBottle, "this drink is done!");
         powder[id] = true;
         emit Powder(id, msg.sender, powder[id]);
     }
 
-    function refill(uint256 id) public {
+    function refill(uint256 id) public payable {
         require(ownerOf(id) == msg.sender, "only owner can refill!");
+        require(msg.value >= refillPrice, "Not enough for a refill");
         powder[id] = false;
         sips[id] = 0;
-        emit Refill(id, msg.sender);
+        emit Refill(id, msg.value, msg.sender);
+    }
+
+    function pour(uint256 id, address drinker) public {
+        require(ownerOf(id) == msg.sender, "only owner can pour!");
+        require(sips[id] < sipsPerBottle, "this drink is done!");
+        sips[id] += 1;
+        if (powder[id]) {
+            Hydrate(hydrate).mintPlus(drinker);
+        } else {
+            Hydrate(hydrate).mint(drinker);
+        }
+        emit Drink(id, msg.sender, drinker);
     }
 
     receive() external payable {
@@ -115,7 +143,9 @@ contract Falgene is ERC721Enumerable, Ownable {
 
     function tokenURI(uint256 id) public view override returns (string memory) {
         require(_exists(id), "not exist");
-        string memory name = string(abi.encodePacked("OE #", id.toString()));
+        string memory name = string(
+            abi.encodePacked("Bottle #", id.toString())
+        );
         string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
         return
@@ -127,11 +157,7 @@ contract Falgene is ERC721Enumerable, Ownable {
                             abi.encodePacked(
                                 '{"name":"',
                                 name,
-                                '", "description":"',
-                                ownerOf(id) == address(this)
-                                    ? "A recycled bottle of OE"
-                                    : "Sipping on cool, crisp OE 40s!",
-                                '", "external_url":"https://oe40.me", "attributes": ',
+                                '", "description":"Staying Hydrated", "external_url":"https://oe40.me", "attributes":',
                                 getAttributesForToken(id),
                                 '"owner":"',
                                 (uint160(ownerOf(id))).toHexString(20),
@@ -157,7 +183,7 @@ contract Falgene is ERC721Enumerable, Ownable {
                     '[{"trait_type": "sips", "value": ',
                     uint2str(sips[id]),
                     '}, {"trait_type": "state", "value": "',
-                    ownerOf(id) == address(this) ? "recycled" : "still OE",
+                    powder[id] ? "Powdered" : "Un-powdered",
                     '"}],'
                 )
             );
@@ -181,17 +207,13 @@ contract Falgene is ERC721Enumerable, Ownable {
 
     // Visibility is `public` to enable it being called by other contracts for composition.
     function renderTokenById(uint256 id) public view returns (string memory) {
-        string memory drinkcolorlight = "cfcfce";
-        string memory drinkcolordark = "b5b5b6";
+        string memory drinkcolorlight = "DEE9EA";
+        string memory drinkcolordark = "C9DDDF";
 
         if (powder[id]) {
-            drinkcolorlight = "CF3C1E";
-            drinkcolordark = "A4260C";
+            drinkcolorlight = "FB415E";
+            drinkcolordark = "F0455F";
         }
-
-        // if(wrapped[id]) {
-        //   return '<defs><style>.cls-1,.cls-5{fill:#fff}.cls-1,.cls-10,.cls-11,.cls-12,.cls-13,.cls-2,.cls-3,.cls-4,.cls-8,.cls-9{stroke:#000;stroke-miterlimit:10}.cls-2,.cls-6{fill:#8a1300}.cls-3{fill:#ffdd74}.cls-4{fill:#bfa100}.cls-5,.cls-7{font-size:31.38px;letter-spacing:.02em;font-family:Arial-Black,Arial Black;font-weight:800}.cls-7{font-size:78px;fill:#ffede9;letter-spacing:.01em}.cls-8{fill:#c97700}.cls-10,.cls-9{fill:#ffc44a}.cls-9{opacity:.17}.cls-11{fill:#c7b299}.cls-12,.cls-13{fill:#998675}.cls-13{opacity:.39}</style></defs><path class="cls-1" d="M7 522S5 631 29 636c0 0 0 13 80 13h56s24-9 31-22c0 0 9-15 12-42v-63l4-176V242S166 93 136 49a58 58 0 0 0-6-7c-25-26-39-9-43-3a22 22 0 0 0-2 3S9 200 11 242c0 0-4 37-4 58Z"/><path class="cls-4" d="M78 5c-2 4-6 18 0 33 0 0 21 11 60 0 0 0 8-27-4-33 0 0-19 11-56 0Z"/><path class="cls-4" d="M107 1S76 2 80 5c0 0 32 9 56 0 0 0 5-3-29-4ZM75 14s14 9 48 4M75 29s8 6 48 0"/><path class="cls-9" d="M29 636s122-19 148-5"/><path class="cls-11" d="M50 82s-10 1-9 6l1 5s5 3 9 3-3 3-3 3 0 4 4 5c0 0-9-3-11 0s-4 10 0 11-15-4-13 3c0 0-6 3 3 6 0 0 0 13-5 21 0 0-14 43-16 57 0 0-8 88-9 120s0 251 6 267c0 0-5 48 27 57 0 0 128 12 143 5 0 0 39 2 35-38 0 0 6-36 3-43l1-328s-40-128-45-130c0 0 10-6 5-9 0 0-3-8-7-5 0 0 16-7 8-10 0 0-5-7-8-2 0 0-5-11-10-7 0 0-9 2-8 5s-23 5-23 5a84 84 0 0 1-37-1s-33 3-41-3v-3Z"/><path class="cls-12" d="M68 79H57s-8-1-7 6 6 7 6 7l2 1 60 2 36-6 5-10s10-9 0-8h-10l3 8s-11 26-87 7Z"/><path class="cls-13" d="m157 124 40 120s9 346 4 361c0 0-8 28-38 23"/>';
-        // }
 
         string memory fluid = string(
             abi.encodePacked(
@@ -260,15 +282,6 @@ contract Falgene is ERC721Enumerable, Ownable {
                 '<path class="cls-1" d="m119.61,48.17c0,1.51.41,2.96,1.17,4.34l-22.21-12.87-10.24-11.27-2.38-2.62-17.25-14.73-17.25-2.95-22.31,5.06-18.52,14.73-2.05,4.9-5.53,13.19-2.53,14.31,1.69-18.21,7.15-20.77,9.68-13.2L39.24.5h21.41l21.51,7.57,13.05,12.21,4.66,5.01,5.11,5.5,17.03,11.25c-1.54,1.88-2.4,3.95-2.4,6.12Z"/>',
                 '<path class="cls-1" d="m72.5,99.43l-11.85-.03-6.6-.78-7.53-.9-10.07-3.8-4.43-1.67-14.25-9.68-13.89-14.31-3.37-8,2.53-14.31,5.53-13.19-2.58,15.42,2.58,15.43,11.31,9.29c2.56,1.79,5.85,4.08,9.68,6.73,5.86,4.06,7.65,5.24,10.31,6.52,1.61.77,3.18,1.37,4.73,1.88,1.39.46,2.76.86,4.11,1.28,2.89.87,5.35,1.48,7.16,1.89l7.11.86c1.07,1.26,2.36,2.47,3.86,3.65,1.64,1.3,3.54,2.54,5.66,3.73Z"/>',
                 '<line class="cls-3" x1="112.12" y1="142.23" x2="112.12" y2="493.18"/><line class="cls-3" x1="91.78" y1="197.53" x2="135.1" y2="197.53"/><line class="cls-3" x1="85.16" y1="167.53" x2="141.72" y2="167.53"/><line class="cls-3" x1="85.16" y1="227.53" x2="141.72" y2="227.53"/><line class="cls-3" x1="91.78" y1="257.53" x2="135.1" y2="257.53"/><line class="cls-3" x1="85.16" y1="287.53" x2="141.72" y2="287.53"/><line class="cls-3" x1="91.78" y1="317.53" x2="135.1" y2="317.53"/><line class="cls-3" x1="85.16" y1="347.53" x2="141.72" y2="347.53"/><line class="cls-3" x1="85.16" y1="407.53" x2="141.72" y2="407.53"/><line class="cls-3" x1="91.78" y1="377.53" x2="135.1" y2="377.53"/><line class="cls-3" x1="91.78" y1="437.53" x2="135.1" y2="437.53"/><line class="cls-3" x1="84.02" y1="467.53" x2="140.59" y2="467.53"/>'
-                // '<line class="cls-3" x1="91.78" y1="257.53" x2="135.1" y2="257.53"/>',
-                // '<line class="cls-3" x1="85.16" y1="287.53" x2="141.72" y2="287.53"/>',
-                // '<line class="cls-3" x1="91.78" y1="317.53" x2="135.1" y2="317.53"/>',
-                // '',
-                // '<line class="cls-3" x1="91.78" y1="377.53" x2="135.1" y2="377.53"/>',
-                // '',
-                // '',
-                // '',
-                // ''
             )
         );
 
