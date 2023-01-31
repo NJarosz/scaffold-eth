@@ -245,7 +245,7 @@ function App(props) {
         {totalSupply >= limit ? <div>
           <h2> All Bottles have been minted! </h2>
 
-          <h3> Fork <a href="https://github.com/scaffold-eth/scaffold-eth/tree/sipping-oe" target="_blank">the repo</a>, follow the readme, and deploy your own to optimism! </h3>
+          <h3> Fork <a href="https://github.com/NJarosz/scaffold-eth/tree/waterbottles" target="_blank">the repo</a>, follow the readme, and deploy your own to optimism! </h3>
         </div> : <Button
           type="primary"
           size="large"
