@@ -96,6 +96,15 @@ contract Falgene is ERC721Enumerable, Ownable {
 
         return id;
     }
+    
+    function withdraw(uint256 _amount) external onlyOwner {
+        require(
+            _amount <= address(this).balance,
+            "Not Enough Funds To Withdraw"
+        );
+        (bool sent, ) = msg.sender.call{value: _amount}("");
+        require(sent, "Failed to send Ether");
+    }
 
     function sip(uint256 id) public {
         require(ownerOf(id) == msg.sender, "only owner can sip!");
@@ -111,6 +120,7 @@ contract Falgene is ERC721Enumerable, Ownable {
 
     function addPowder(uint256 id) public payable {
         require(ownerOf(id) == msg.sender, "only owner can add powder!");
+        require(msg.value >= powderPrice, "not enough to add powder!");
         require(sips[id] < sipsPerBottle, "this drink is done!");
         powder[id] = true;
         emit Powder(id, msg.sender, powder[id]);
@@ -118,7 +128,7 @@ contract Falgene is ERC721Enumerable, Ownable {
 
     function refill(uint256 id) public payable {
         require(ownerOf(id) == msg.sender, "only owner can refill!");
-        require(msg.value >= refillPrice, "Not enough for a refill");
+        require(msg.value >= refillPrice, "not enough for a refill!");
         powder[id] = false;
         sips[id] = 0;
         emit Refill(id, msg.value, msg.sender);
