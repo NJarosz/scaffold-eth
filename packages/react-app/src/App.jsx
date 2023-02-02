@@ -59,7 +59,7 @@ const { ethers } = require("ethers");
 const DEBUG = false;
 const NETWORKCHECK = true;
 
-const targetNetworkString = "localhost" // <------ change this as you deploy do other networks
+const targetNetworkString = "arbitrum" // <------ change this as you deploy do other networks
 
 const web3Modal = Web3ModalSetup();
 

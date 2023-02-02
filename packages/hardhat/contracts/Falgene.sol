@@ -96,7 +96,7 @@ contract Falgene is ERC721Enumerable, Ownable {
 
         return id;
     }
-    
+
     function withdraw(uint256 _amount) external onlyOwner {
         require(
             _amount <= address(this).balance,
@@ -167,7 +167,7 @@ contract Falgene is ERC721Enumerable, Ownable {
                             abi.encodePacked(
                                 '{"name":"',
                                 name,
-                                '", "description":"Staying Hydrated", "external_url":"https://oe40.me", "attributes":',
+                                '", "description":"Staying Hydrated", "external_url":"https://vagabond-crib.surge.sh/", "attributes":',
                                 getAttributesForToken(id),
                                 '"owner":"',
                                 (uint160(ownerOf(id))).toHexString(20),

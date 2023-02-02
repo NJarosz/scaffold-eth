@@ -1,13 +1,13 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "7b0e75d38d424750b92791477924d133";
+export const INFURA_ID = process.env.INFURA_ID;
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
+export const ETHERSCAN_KEY = process.env.ETHERSCAN_ID;
 
 // BLOCKNATIVE ID FOR Notify.js:
 export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
-export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
+export const ALCHEMY_KEY = process.env.ALCHEMY_ID;
 
 export const NETWORKS = {
   localhost: {
@@ -22,38 +22,14 @@ export const NETWORKS = {
     color: "#f01a37",
     chainId: 10,
     blockExplorer: "https://optimistic.etherscan.io/",
-    rpcUrl: `https://mainnet.optimism.io`,
+    rpcUrl: `https://optimism-mainnet.infura.io/v3/${INFURA_ID}`,
   },
   mainnet: {
     name: "mainnet",
     color: "#ff8b9e",
     chainId: 1,
-    rpcUrl: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+    rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
-  },
-  kovan: {
-    name: "kovan",
-    color: "#7003DD",
-    chainId: 42,
-    rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
-    blockExplorer: "https://kovan.etherscan.io/",
-    faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
-  },
-  rinkeby: {
-    name: "rinkeby",
-    color: "#e0d068",
-    chainId: 4,
-    rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-    faucet: "https://faucet.rinkeby.io/",
-    blockExplorer: "https://rinkeby.etherscan.io/",
-  },
-  ropsten: {
-    name: "ropsten",
-    color: "#F60D09",
-    chainId: 3,
-    faucet: "https://faucet.ropsten.be/",
-    blockExplorer: "https://ropsten.etherscan.io/",
-    rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
   },
   goerli: {
     name: "goerli",
@@ -62,6 +38,14 @@ export const NETWORKS = {
     faucet: "https://goerli-faucet.slock.it/",
     blockExplorer: "https://goerli.etherscan.io/",
     rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
+  },
+  sepolia: {
+    name: "sepolia",
+    color: "#F045CC",
+    chainId: 11155111,
+    faucet: "https://faucet.sepolia.dev",
+    blockExplorer: "https://sepolia.etherscan.io/",
+    rpcUrl: `https://seploia.infura.io/v3/${INFURA_ID}`,
   },
   xdai: {
     name: "xdai",
@@ -107,20 +91,19 @@ export const NETWORKS = {
     blockExplorer: "",
     rpcUrl: `http://localhost:7545`,
   },
-  rinkebyArbitrum: {
-    name: "Arbitrum Testnet",
+  goerliArbitrum: {
+    name: "Arbitrum Nitro Rollup Testnet",
     color: "#50a0ea",
-    chainId: 421611,
-    blockExplorer: "https://rinkeby-explorer.arbitrum.io/#/",
-    rpcUrl: `https://rinkeby.arbitrum.io/rpc`,
+    chainId: 421613,
+    blockExplorer: " https://goerli-rollup-explorer.arbitrum.io/",
+    rpcUrl: `https://arbitrum-goerli.infura.io/v3/${INFURA_ID}`,
   },
   arbitrum: {
     name: "Arbitrum",
     color: "#50a0ea",
     chainId: 42161,
     blockExplorer: "https://explorer.arbitrum.io/#/",
-    rpcUrl: `https://arb1.arbitrum.io/rpc`,
-    gasPrice: 0,
+    rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${INFURA_ID}`,
   },
   localOptimismL1: {
     name: "localOptimismL1",
@@ -137,12 +120,12 @@ export const NETWORKS = {
     rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
     gasPrice: 0,
   },
-  kovanOptimism: {
-    name: "kovanOptimism",
+  goerliOptimism: {
+    name: "Optimism Goerli",
     color: "#f01a37",
-    chainId: 69,
-    blockExplorer: "https://kovan-optimistic.etherscan.io/",
-    rpcUrl: `https://kovan.optimism.io`,
+    chainId: 420,
+    blockExplorer: "https://goerli-explorer.optimism.io/",
+    rpcUrl: `https://optimism-goerli.infura.io/v3/${INFURA_ID}`,
     gasPrice: 0,
   },
   localAvalanche: {

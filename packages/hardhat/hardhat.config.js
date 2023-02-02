@@ -14,6 +14,12 @@ require("@nomiclabs/hardhat-etherscan");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
+const INFURA_ID = process.env.INFURA_ID;
+//const ALCHEMY_ID = process.env.ALCHEMY_ID;
+//const AAG_KEY = process.env.AAG_KEY;
+//const AOG_KEY = process.env.AOG_KEY;
+const PR_KEY = process.env.PRK;
+
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
 
@@ -26,7 +32,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "arbitrum";
 
 const mainnetGwei = 21;
 
@@ -103,26 +109,9 @@ module.exports = {
     //   accounts: [`${process.env.XDAI_DEPLOYER_PRIV_KEY}`],
     // },
 
-    rinkeby: {
-      url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
 
-      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
-
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    kovan: {
-      url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-
-      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/kovan", // <---- YOUR MORALIS ID! (not limited to infura)
-
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
     mainnet: {
-      url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      url: `https://mainnet.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
 
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
 
@@ -131,8 +120,8 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    ropsten: {
-      url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
 
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/ropsten",// <---- YOUR MORALIS ID! (not limited to infura)
 
@@ -141,7 +130,7 @@ module.exports = {
       },
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      url: `https://goerli.infura.io/v3/${INFURA_ID}`, // <---- YOUR INFURA ID! (or it won't work)
 
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/goerli", // <---- YOUR MORALIS ID! (not limited to infura)
 
@@ -178,14 +167,20 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    rinkebyArbitrum: {
-      url: "https://rinkeby.arbitrum.io/rpc",
-      gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+    arbitrum: {
+      url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_ID}`,
+      gasPrice: 100000000,
+      accounts: [`${PR_KEY}`],
       companionNetworks: {
-        l1: "rinkeby",
+        l1: "mainnet",
+      },
+    },
+    goerliArbitrum: {
+      url: `https://arbitrum-goerli.infura.io/v3/${INFURA_ID}`,
+      gasPrice: 100000000,
+      accounts: [`${PR_KEY}`],
+      companionNetworks: {
+        l1: "goerli",
       },
     },
     localArbitrum: {
@@ -209,7 +204,7 @@ module.exports = {
       },
     },
     optimism: {
-      url: "https://mainnet.optimism.io",
+      url: `https://optimism-mainnet.infura.io/v3/${INFURA_ID}`,
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -217,13 +212,11 @@ module.exports = {
         l1: "mainnet",
       },
     },
-    kovanOptimism: {
-      url: "https://kovan.optimism.io",
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+    goerliOptimism: {
+      url: `https://optimism-goerli.infura.io/v3/${INFURA_ID}`,
+      accounts: [`${PR_KEY}`],
       companionNetworks: {
-        l1: "kovan",
+        l1: "goerli",
       },
     },
     localOptimism: {
